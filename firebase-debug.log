@@ -1,0 +1,41 @@
+[debug] [2018-02-04T22:22:52.085Z] ----------------------------------------------------------------------
+[debug] [2018-02-04T22:22:52.089Z] Command:       /home/deb/.nvm/versions/node/v9.4.0/bin/node /home/deb/.nvm/versions/node/v9.4.0/bin/firebase serve
+[debug] [2018-02-04T22:22:52.089Z] CLI Version:   3.17.4
+[debug] [2018-02-04T22:22:52.089Z] Platform:      linux
+[debug] [2018-02-04T22:22:52.089Z] Node Version:  v9.4.0
+[debug] [2018-02-04T22:22:52.089Z] Time:          Sun Feb 04 2018 14:22:52 GMT-0800 (PST)
+[debug] [2018-02-04T22:22:52.089Z] ----------------------------------------------------------------------
+[debug] 
+[debug] [2018-02-04T22:22:52.103Z] > command requires scopes: ["email","openid","https://www.googleapis.com/auth/cloudplatformprojects.readonly","https://www.googleapis.com/auth/firebase","https://www.googleapis.com/auth/cloud-platform"]
+[debug] [2018-02-04T22:22:52.103Z] > authorizing via signed-in user
+[debug] [2018-02-04T22:22:52.105Z] > refreshing access token with scopes: ["email","https://www.googleapis.com/auth/cloud-platform","https://www.googleapis.com/auth/cloudplatformprojects.readonly","https://www.googleapis.com/auth/firebase","openid"]
+[debug] [2018-02-04T22:22:52.105Z] >>> HTTP REQUEST POST https://www.googleapis.com/oauth2/v3/token  
+ { refresh_token: '1/8VU2bFLRQQeZvvUCLWGrQZu8cDmrSR_OR30VZgpliOg',
+  client_id: '563584335869-fgrhgmd47bqnekij5i8b5pr03ho849e6.apps.googleusercontent.com',
+  client_secret: 'j9iVZfS8kkCEFUPaAeJV0sAi',
+  grant_type: 'refresh_token',
+  scope: 'email https://www.googleapis.com/auth/cloud-platform https://www.googleapis.com/auth/cloudplatformprojects.readonly https://www.googleapis.com/auth/firebase openid' } 
+ Sun Feb 04 2018 14:22:52 GMT-0800 (PST)
+[debug] [2018-02-04T22:22:52.341Z] <<< HTTP RESPONSE 200
+[debug] [2018-02-04T22:22:52.350Z] >>> HTTP REQUEST GET https://admin.firebase.com/v1/projects/design-tech-tutoring  
+  
+ Sun Feb 04 2018 14:22:52 GMT-0800 (PST)
+[debug] [2018-02-04T22:22:52.777Z] <<< HTTP RESPONSE 200
+[debug] [2018-02-04T22:22:52.778Z] >>> HTTP REQUEST GET https://admin.firebase.com/v1/database/design-tech-tutoring/tokens  
+  
+ Sun Feb 04 2018 14:22:52 GMT-0800 (PST)
+[debug] [2018-02-04T22:22:53.402Z] <<< HTTP RESPONSE 200
+[info] 
+[info] === Serving from '/home/deb/git/Design-Tech-Tutoring'...
+[info] 
+[debug] [2018-02-04T22:22:53.409Z] >>> HTTP REQUEST GET https://cloudresourcemanager.googleapis.com/v1/projects/design-tech-tutoring  
+  
+ Sun Feb 04 2018 14:22:53 GMT-0800 (PST)
+[debug] [2018-02-04T22:22:53.966Z] <<< HTTP RESPONSE 200
+[debug] [2018-02-04T22:22:53.967Z] >>> HTTP REQUEST GET https://mobilesdk-pa.googleapis.com/v1/projects/967509109741/clients/_:getWebAppConfig  
+  
+ Sun Feb 04 2018 14:22:53 GMT-0800 (PST)
+[debug] [2018-02-04T22:22:54.585Z] <<< HTTP RESPONSE 200
+[info] i  hosting: Serving hosting files from: public
+[info] ✔  hosting: Local server: http://localhost:5000
+
