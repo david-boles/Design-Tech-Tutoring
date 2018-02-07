@@ -13,6 +13,4 @@ script:
   - cd site
   - rm -rf public/*
   - ../binaries/hugo
-
-after_success:
   - firebase deploy --token=${FIREBASE_API_TOKEN}
