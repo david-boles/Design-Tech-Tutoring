@@ -1,7 +1,7 @@
 ---
 title: Welcome!
 ---
-You should get automatically redirected from this page. Make sure Javascript is enabled.
+You should get automatically redirected from this page, it could take a minute if your internet is slow. Also, make sure Javascript is enabled.
 <script>
     firebase.auth().onAuthStateChanged(function(user) {
         if (user) {
@@ -17,7 +17,15 @@ You should get automatically redirected from this page. Make sure Javascript is 
             //Redirect based on tutor status
             return firebase.database().ref('/users/' + userId).once('value').then(function(userProps) {
                 if(userProps.val().isTutor) {
-                    window.location.href = "/settings/";
+                    firebase.database().ref('/tutors/' + userId).once('value').then(function(tutorProps) {
+                        if(tutorProps.val() == null) {
+                            firebase.database().ref('tutors/' + userId).set({available: false}).then(function(){
+                                window.location.href = "/settings/";
+                            });
+                        }else {
+                            window.location.href = "/settings/";
+                        }
+                    });
                 }else {
                     window.location.href = "/request/";
                 }
