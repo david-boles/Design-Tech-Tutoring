@@ -2,4 +2,76 @@
 title: Tutor Settings
 auth: tutor
 ---
-This is the tutor settings page!
+<h1>
+    Available
+    <label class="mdl-icon-toggle mdl-js-icon-toggle" for="availability_checkbox">
+        <input type="checkbox" id="availability_checkbox" class="mdl-icon-toggle__input" disabled>
+        <i id="availability_checkbox-icon" class="mdl-icon-toggle__label material-icons" style="position: absolute; font-size: 48px;">do_not_disturb_on</i>
+    </label>
+</h1>
+
+<h1>
+    Subjects:
+</h1>
+
+<script>
+    document.getElementById("availability_checkbox").onchange = function(){
+        if(this.checked) {
+            var icon = document.getElementById("availability_checkbox-icon")
+            icon.innerText = "check_circle";
+            icon.style.color = "#4CAF50"
+        }else {
+            var icon = document.getElementById("availability_checkbox-icon")
+            icon.innerText = "do_not_disturb_on";
+            icon.style.color = "#F44336";
+        }
+    };
+
+    firebase.auth().onAuthStateChanged(function(user) {
+        if (user) {
+            var userId = user.uid;
+
+            //AVAILABILITY
+            //Variables for the availability checkbox and icon.
+            var availCheck = document.getElementById("availability_checkbox");
+            var availIcon = document.getElementById("availability_checkbox-icon")
+
+            //Function to update the availability icon based on the checkbox.
+            function updateAvailIcon(){
+                if(availCheck.checked) {
+                    availIcon.innerText = "check_circle";
+                    availIcon.style.color = "#4CAF50";
+                }else {
+                    availIcon.innerText = "do_not_disturb_on";
+                    availIcon.style.color = "#F44336";
+                }
+            };
+
+            //Initializes the checkbox and icon based on firebase data.
+            firebase.database().ref('/tutors/' + userId).once('value').then(function(tutorProps) {
+                if(tutorProps.val().available) {
+                    availCheck.disabled = false;
+                    availCheck.checked = true;
+                    updateAvailIcon();
+                }else {
+                    availCheck.disabled = false;
+                    availCheck.checked = false;
+                    updateAvailIcon();
+                }
+            });
+
+            //Handler for user-initiated changes to availability status, updates firebase.
+            availCheck.onclick = function() {
+                var update = {};
+                update['/tutors/' + userId + "/available"] = availCheck.checked;
+                firebase.database().ref().update(update);
+            };
+
+            //Handler for updating the checkbox and icon when firebase changes.
+            firebase.database().ref('/tutors/' + userId + '/available').on('value', function(available) {
+                availCheck.checked = available.val();
+                updateAvailIcon();
+            });
+        }
+    });
+</script>
