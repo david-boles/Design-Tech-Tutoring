@@ -34,31 +34,24 @@
             <!-- Always shows a header, even in smaller screens. -->
             <div class="mdl-layout mdl-js-layout mdl-layout--fixed-drawer mdl-layout--fixed-header">
                 <header class="mdl-layout__header">
-                    <div class="mdl-layout__header-row" style="padding: 0 16px 0 32px;">
-                        {{ block "header-contents" . }}
-                            <!-- Title -->
+                    <div class="mdl-layout__header-row">
+                        {{ block "header-row-contents" . }}
                             <span class="mdl-layout-title">{{ .Title }}</span>
-                            <!-- Add spacer, to align navigation to the right -->
                             <div class="mdl-layout-spacer"></div>
-                            <!-- Navigation. We hide it in small screens.
-                            <nav class="mdl-navigation mdl-layout--large-screen-only">
-                                <a class="mdl-navigation__link" href="">Link</a>
-                                <a class="mdl-navigation__link" href="">Link</a>
-                                <a class="mdl-navigation__link" href="">Link</a>
-                                <a class="mdl-navigation__link" href="">Link</a>
-                            </nav>-->
-
-                            <!-- Raised button with ripple 
-                            <a href="/request.html" class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--accent">NEW REQUEST</a>
-                            -->
-
                             <a href="/login/">
                                 <img src="https://lh3.googleusercontent.com/-XdUIqdMkCWA/AAAAAAAAAAI/AAAAAAAAAAA/4252rscbv5M/photo.jpg" style="width: 40px; height: 40px; border-radius: 20px;">
                             </a>
-                            
                         {{ end }}
                     </div>
-                </header>
+                    </header>
+                    <div class="mdl-layout__drawer">
+                    <span class="mdl-layout-title">d.tech Tutoring</span>
+                    <nav class="mdl-navigation">
+                        <a class="mdl-navigation__link require-tutor" href="/settings/">Tutor Settings</a>
+                        <a class="mdl-navigation__link require-auth" href="/request/">Request</a>
+                        <a class="mdl-navigation__link" href="https://github.com/david476/Design-Tech-Tutoring">About</a>
+                    </nav>
+                </div>
 
                 <main class="mdl-layout__content">
                     {{ block "main" . }}
