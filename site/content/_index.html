@@ -1,0 +1,29 @@
+---
+title: Welcome!
+---
+You should get automatically redirected from this page. Make sure Javascript is enabled.
+<script>
+    firebase.auth().onAuthStateChanged(function(user) {
+        if (user) {
+            var userId = user.uid;
+
+            //Update user properties
+            firebase.database().ref('users/' + userId).update({
+                name: user.displayName,
+                email: user.email,
+                photo: user.photoURL
+            });
+
+            //Redirect based on tutor status
+            return firebase.database().ref('/users/' + userId).once('value').then(function(userProps) {
+                if(userProps.val().isTutor) {
+                    window.location.href = "/settings/";
+                }else {
+                    window.location.href = "/request/";
+                }
+            });
+        } else {
+            window.location.href = "/login/";
+        }
+    });
+</script>
