@@ -2,6 +2,7 @@
 title: Request a Tutor
 auth: true
 ---
+
 <div  style="padding: 0 0 64px 0;">
     <h1>What subject?</h1>
     <div id="option-subjects"></div>
@@ -78,14 +79,14 @@ auth: true
     });
 
     function constructSubjectGroupSection(groupKey, group, availabilities) {
-        subjectSettingsContainer = document.getElementById("option-subjects");
+        var subjectSettingsContainer = document.getElementById("option-subjects");
 
         //Subject group header
         var groupHeader = document.createElement("h2");
         groupHeader.innerText = group.name;
         subjectSettingsContainer.appendChild(groupHeader);
 
-        //Subject group checkbox creation
+        //Subject group button creation
         var groupContainer = document.createElement("div");
         groupContainer.className = "mdl-grid mdl-grid--no-spacing";
         for(var subjectKey in group.subjects) {
@@ -125,6 +126,7 @@ auth: true
     }
 
     function constructLocationGroupSection(groupKey, group) {
+        
         locationSettingsContainer = document.getElementById("option-locations");
 
         //Location group header
@@ -132,20 +134,18 @@ auth: true
         groupHeader.innerText = group.name;
         locationSettingsContainer.appendChild(groupHeader);
 
-        //Location group checkbox creation
+        //Location group button creation
         var groupContainer = document.createElement("div");
         groupContainer.className = "mdl-grid mdl-grid--no-spacing";
         for(var locationKey in group.locations) {
             var locationCell = document.createElement("div");
             locationCell.className = "mdl-cell mdl-cell--4-col";
 
-            var locationLabelWrapper = document.createElement("div");
-            locationLabelWrapper.id = locationKey + "-wrapper";
-
             var locationLabel = document.createElement("label");
             locationLabel.id = locationKey + "-label";
             locationLabel.className = "mdl-radio mdl-js-radio";
             locationLabel.htmlFor = locationKey + "-button";
+            locationLabel.title = group.locations[locationKey].description;
 
             var locationButton = document.createElement("input");
             locationButton.type = "radio";
@@ -162,10 +162,7 @@ auth: true
             locationLabel.appendChild(locationText);
 
             componentHandler.upgradeElement(locationLabel);
-            locationLabelWrapper.appendChild(locationLabel);
-
-            componentHandler.upgradeElement(locationLabelWrapper);
-            locationCell.appendChild(locationLabelWrapper);
+            locationCell.appendChild(locationLabel);
 
             var locationDescription = document.createElement("div");
             locationDescription.className = "mdl-tooltip";
@@ -179,6 +176,9 @@ auth: true
         }
         componentHandler.upgradeElement(groupContainer);
         locationSettingsContainer.appendChild(groupContainer);
+        
+
+        
     }
     
 </script>
