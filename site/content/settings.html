@@ -2,34 +2,30 @@
 title: Tutor Settings
 auth: tutor
 ---
-<h1>
-    Available
-    <label class="mdl-icon-toggle mdl-js-icon-toggle" for="availability_checkbox">
-        <input type="checkbox" id="availability_checkbox" class="mdl-icon-toggle__input" disabled>
-        <i id="availability_checkbox-icon" class="mdl-icon-toggle__label material-icons" style="position: absolute; font-size: 48px;">do_not_disturb_on</i>
-    </label>
-</h1>
+<div id="settings-availability">
+    <h1>
+        Available
+        <label class="mdl-icon-toggle mdl-js-icon-toggle" for="availability_checkbox">
+            <input type="checkbox" id="availability_checkbox" class="mdl-icon-toggle__input" disabled>
+            <i id="availability_checkbox-icon" class="mdl-icon-toggle__label material-icons" style="position: absolute; font-size: 48px;">do_not_disturb_on</i>
+        </label>
+    </h1>
+</div>
 
-<h1>
-    Subjects:
-</h1>
+<hr>
+
+<h1>Subjects:</h1>
+<div id="settings-subjects">
+
+    
+</div>
 
 <script>
-    document.getElementById("availability_checkbox").onchange = function(){
-        if(this.checked) {
-            var icon = document.getElementById("availability_checkbox-icon")
-            icon.innerText = "check_circle";
-            icon.style.color = "#4CAF50"
-        }else {
-            var icon = document.getElementById("availability_checkbox-icon")
-            icon.innerText = "do_not_disturb_on";
-            icon.style.color = "#F44336";
-        }
-    };
-
     firebase.auth().onAuthStateChanged(function(user) {
         if (user) {
             var userId = user.uid;
+
+
 
             //AVAILABILITY
             //Variables for the availability checkbox and icon.
@@ -63,8 +59,7 @@ auth: tutor
             //Handler for user-initiated changes to availability status, updates firebase.
             availCheck.onclick = function() {
                 var update = {};
-                update['/tutors/' + userId + "/available"] = availCheck.checked;
-                firebase.database().ref().update(update);
+                firebase.database().ref('/tutors/' + userId + "/available").set(availCheck.checked);
             };
 
             //Handler for updating the checkbox and icon when firebase changes.
@@ -72,6 +67,86 @@ auth: tutor
                 availCheck.checked = available.val();
                 updateAvailIcon();
             });
+
+
+
+            //SUBJECTS
+            //Set up the checkboxes.
+            firebase.database().ref('/tutors/' + userId).once('value').then(function(tutorProps) {
+                firebase.database().ref('/subjects/').once('value').then(function(groups) {
+                    for(var groupKey in groups.val()) {
+                        constructSubjectGroupSection(groupKey, groups.val()[groupKey], userId, tutorProps.val());
+                    }
+                });
+            });
         }
     });
+
+    function constructSubjectGroupSection(groupKey, group, userId, tutor) {
+        subjectSettingsContainer = document.getElementById("settings-subjects");
+
+        //Subject group header
+        var groupHeader = document.createElement("h2");
+        groupHeader.innerText = group.name;
+        subjectSettingsContainer.appendChild(groupHeader);
+
+        //Subject group checkbox creation
+        var groupContainer = document.createElement("div");
+        groupContainer.className = "mdl-grid mdl-grid--no-spacing";
+        for(var subjectKey in group.subjects) {
+            var subjectCell = document.createElement("div");
+            subjectCell.className = "mdl-cell mdl-cell--4-col";
+
+            var subjectLabel = document.createElement("label");
+            subjectLabel.id = subjectKey + "-label";
+            subjectLabel.className = "mdl-checkbox mdl-js-checkbox";
+            subjectLabel.htmlFor = subjectKey + "-checkbox";
+
+            var subjectCheckbox = document.createElement("input");
+            subjectCheckbox.type = "checkbox";
+            subjectCheckbox.id = subjectKey + "-checkbox";
+            subjectCheckbox.className = "mdl-checkbox__input";
+            subjectCheckbox.checked = tutor.subjects[subjectKey];
+            componentHandler.upgradeElement(subjectCheckbox);
+            subjectLabel.appendChild(subjectCheckbox);
+
+            var subjectText = document.createElement("span");
+            subjectText.className = "mdl-checkbox__label";
+            subjectText.innerText = group.subjects[subjectKey].name;
+            componentHandler.upgradeElement(subjectText);
+            subjectLabel.appendChild(subjectText);
+
+            componentHandler.upgradeElement(subjectLabel);
+            subjectCell.appendChild(subjectLabel);
+            
+            componentHandler.upgradeElement(subjectCell);
+            groupContainer.appendChild(subjectCell);
+        }
+        componentHandler.upgradeElement(groupContainer);
+        subjectSettingsContainer.appendChild(groupContainer);
+
+        //Set up event handlers.
+        for(var subjectKey in group.subjects) {
+            addSubjectCheckboxListeners(subjectKey, userId)
+        }
+    }
+
+    function addSubjectCheckboxListeners(subjectKey, userId) {
+        //User changes
+        document.getElementById(subjectKey + "-checkbox").onclick = function() {
+            firebase.database().ref('/tutors/' + userId + "/subjects/" + subjectKey).set(this.checked);
+        };
+
+        //Database changes
+        firebase.database().ref('/tutors/' + userId + "/subjects/" + subjectKey).on('value', function(doesTutor) {
+            
+            document.getElementById(subjectKey + "-checkbox").checked = doesTutor.val();
+            var label = document.getElementById(subjectKey + "-label");
+            if(doesTutor.val()) {
+                label.className = label.className + " is-checked";
+            }else {
+                label.classList.remove("is-checked");
+            }
+        });
+    }
 </script>

@@ -2,4 +2,183 @@
 title: Request a Tutor
 auth: true
 ---
-This is the page for requesting a tutor!
+<div  style="padding: 0 0 64px 0;">
+    <h1>What subject?</h1>
+    <div id="option-subjects"></div>
+    
+    <hr>
+    
+    <h1>Where are you?</h1>
+    <div id="option-locations"></div>
+    
+    <hr>
+
+    <button id="submit_button" class="mdl-button mdl-js-button mdl-button--raised mdl-button--colored">
+        MAKE REQUEST
+    </button>
+
+    <div id="snackbar" class="mdl-js-snackbar mdl-snackbar">
+        <div class="mdl-snackbar__text"></div>
+        <button class="mdl-snackbar__action" type="button"></button>
+    </div>
+</div>
+
+<script>
+    firebase.auth().onAuthStateChanged(function(user) {
+        if (user) {
+            var userId = user.uid;
+
+
+
+            //SUBJECTS
+            //Set up the subject radio buttons.
+            firebase.database().ref('/subjects/').once('value').then(function(groups) {
+                firebase.database().ref('/tutors/').once('value').then(function(tutors) {
+                    //Initilize object of tutor availability
+                    var availabilities = {};
+                    for(var groupKey in groups.val()) {
+                        for(var subjectKey in groups.val()[groupKey].subjects) {
+                            availabilities[subjectKey] = 0;
+                        }
+                    }
+                    //Populate availability object
+                    for(var tutorID in tutors.val()) {
+                        if(tutors.val()[tutorID].available) {
+                            for(subjectKey in availabilities) {
+                                if(tutors.val()[tutorID].subjects[subjectKey]) {
+                                    availabilities[subjectKey]++;
+                                }
+                            }
+                        }
+                    }
+
+                    for(var groupKey in groups.val()) {
+                        constructSubjectGroupSection(groupKey, groups.val()[groupKey], availabilities);
+                    }
+                });
+            });
+
+            //LOCATIONS
+            //Set up the location radio buttons.
+            firebase.database().ref('/locations/').once('value').then(function(groups) {
+                for(var groupKey in groups.val()) {
+                    constructLocationGroupSection(groupKey, groups.val()[groupKey]);
+                }
+            });
+
+            //SUBMIT
+            document.getElementById("submit_button").onclick = function() {
+                var data = {
+                    message: "Possible warning about not having things selected!",
+                    timeout: 5000
+                };
+                document.getElementById("snackbar").MaterialSnackbar.showSnackbar(data);
+            }
+        }
+    });
+
+    function constructSubjectGroupSection(groupKey, group, availabilities) {
+        subjectSettingsContainer = document.getElementById("option-subjects");
+
+        //Subject group header
+        var groupHeader = document.createElement("h2");
+        groupHeader.innerText = group.name;
+        subjectSettingsContainer.appendChild(groupHeader);
+
+        //Subject group checkbox creation
+        var groupContainer = document.createElement("div");
+        groupContainer.className = "mdl-grid mdl-grid--no-spacing";
+        for(var subjectKey in group.subjects) {
+            var subjectCell = document.createElement("div");
+            subjectCell.className = "mdl-cell mdl-cell--4-col";
+
+            var subjectLabel = document.createElement("label");
+            subjectLabel.id = subjectKey + "-label";
+            subjectLabel.className = "mdl-radio mdl-js-radio";
+            subjectLabel.htmlFor = subjectKey + "-button";
+
+            var subjectButton = document.createElement("input");
+            subjectButton.type = "radio";
+            subjectButton.id = subjectKey + "-button";
+            subjectButton.name = "subject";
+            subjectButton.className = "mdl-radio__button";
+            if(availabilities[subjectKey] == 0) {
+                subjectButton.disabled = true;
+            }
+            componentHandler.upgradeElement(subjectButton);
+            subjectLabel.appendChild(subjectButton);
+
+            var subjectText = document.createElement("span");
+            subjectText.className = "mdl-radio__label";
+            subjectText.innerText = group.subjects[subjectKey].name + " (" + availabilities[subjectKey] + ")";
+            componentHandler.upgradeElement(subjectText);
+            subjectLabel.appendChild(subjectText);
+
+            componentHandler.upgradeElement(subjectLabel);
+            subjectCell.appendChild(subjectLabel);
+            
+            componentHandler.upgradeElement(subjectCell);
+            groupContainer.appendChild(subjectCell);
+        }
+        componentHandler.upgradeElement(groupContainer);
+        subjectSettingsContainer.appendChild(groupContainer);
+    }
+
+    function constructLocationGroupSection(groupKey, group) {
+        locationSettingsContainer = document.getElementById("option-locations");
+
+        //Location group header
+        var groupHeader = document.createElement("h2");
+        groupHeader.innerText = group.name;
+        locationSettingsContainer.appendChild(groupHeader);
+
+        //Location group checkbox creation
+        var groupContainer = document.createElement("div");
+        groupContainer.className = "mdl-grid mdl-grid--no-spacing";
+        for(var locationKey in group.locations) {
+            var locationCell = document.createElement("div");
+            locationCell.className = "mdl-cell mdl-cell--4-col";
+
+            var locationLabelWrapper = document.createElement("div");
+            locationLabelWrapper.id = locationKey + "-wrapper";
+
+            var locationLabel = document.createElement("label");
+            locationLabel.id = locationKey + "-label";
+            locationLabel.className = "mdl-radio mdl-js-radio";
+            locationLabel.htmlFor = locationKey + "-button";
+
+            var locationButton = document.createElement("input");
+            locationButton.type = "radio";
+            locationButton.id = locationKey + "-button";
+            locationButton.name = "location";
+            locationButton.className = "mdl-radio__button";
+            componentHandler.upgradeElement(locationButton);
+            locationLabel.appendChild(locationButton);
+
+            var locationText = document.createElement("span");
+            locationText.className = "mdl-radio__label";
+            locationText.innerText = group.locations[locationKey].name;
+            componentHandler.upgradeElement(locationText);
+            locationLabel.appendChild(locationText);
+
+            componentHandler.upgradeElement(locationLabel);
+            locationLabelWrapper.appendChild(locationLabel);
+
+            componentHandler.upgradeElement(locationLabelWrapper);
+            locationCell.appendChild(locationLabelWrapper);
+
+            var locationDescription = document.createElement("div");
+            locationDescription.className = "mdl-tooltip";
+            locationDescription.htmlFor = locationKey + "-wrapper";
+            locationDescription.innerText = group.locations[locationKey].description;
+            componentHandler.upgradeElement(locationDescription);
+            locationCell.appendChild(locationDescription);
+            
+            componentHandler.upgradeElement(locationCell);  
+            groupContainer.appendChild(locationCell);
+        }
+        componentHandler.upgradeElement(groupContainer);
+        locationSettingsContainer.appendChild(groupContainer);
+    }
+    
+</script>
