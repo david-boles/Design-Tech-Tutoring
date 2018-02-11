@@ -4,19 +4,26 @@ auth: true
 ---
 
 <div  style="padding: 0 0 64px 0;">
-    <h1>What subject?</h1>
-    <div id="option-subjects"></div>
+    <div id="section-subjects">
+        <h1>What subject?</h1>
+        <div id="option-subjects"></div>
+        <hr>
+        <button id="next_button" class="mdl-button mdl-js-button mdl-button--raised mdl-button--colored">
+            NEXT
+        </button>
+    </div>
     
-    <hr>
-    
-    <h1>Where are you?</h1>
-    <div id="option-locations"></div>
-    
-    <hr>
-
-    <button id="submit_button" class="mdl-button mdl-js-button mdl-button--raised mdl-button--colored">
-        MAKE REQUEST
-    </button>
+    <div id="section-locations" style="display: none;">
+        <h1>Where are you?</h1>
+        <div id="option-locations"></div>
+        <hr>
+        <button id="back_button" class="mdl-button mdl-js-button mdl-button--raised" style="margin-right: 10px;">
+            BACK
+        </button>
+        <button id="submit_button" class="mdl-button mdl-js-button mdl-button--raised mdl-button--colored">
+            MAKE REQUEST
+        </button>
+    </div>
 
     <div id="snackbar" class="mdl-js-snackbar mdl-snackbar">
         <div class="mdl-snackbar__text"></div>
@@ -67,13 +74,65 @@ auth: true
                 }
             });
 
+            //NEXT
+            document.getElementById("next_button").onclick = function() {
+                var radios = document.getElementsByName('subject');
+
+                var selected;
+                for (var i = 0, length = radios.length; i < length; i++) {
+                    if (radios[i].checked) {
+                        selected = radios[i].value;
+                        break;
+                    }
+                }
+
+                if(selected) {
+                    document.getElementById("section-subjects").style.display = "none";
+                    document.getElementById("section-locations").style.display = "initial";
+                }else {
+                    var data = {
+                    message: "Please select a subject before continuing.",
+                    timeout: 2500
+                    };
+
+                    document.getElementById("snackbar").MaterialSnackbar.showSnackbar(data);
+                }
+            }
+
+            //BACK
+            document.getElementById("back_button").onclick = function() {
+                document.getElementById("section-locations").style.display = "none";
+                document.getElementById("section-subjects").style.display = "initial";
+            }
+
             //SUBMIT
             document.getElementById("submit_button").onclick = function() {
-                var data = {
-                    message: "Possible warning about not having things selected!",
-                    timeout: 5000
-                };
-                document.getElementById("snackbar").MaterialSnackbar.showSnackbar(data);
+                var radios = document.getElementsByName('location');
+
+                var selected;
+                for (var i = 0, length = radios.length; i < length; i++) {
+                    if (radios[i].checked) {
+                        selected = radios[i].value;
+                        break;
+                    }
+                }
+
+                if(selected) {
+                    //TODO replace
+                    var data = {
+                    message: "Your request would now be submitted!",
+                    timeout: 2500
+                    };
+
+                    document.getElementById("snackbar").MaterialSnackbar.showSnackbar(data);
+                }else {
+                    var data = {
+                    message: "Please select a location before continuing.",
+                    timeout: 2500
+                    };
+
+                    document.getElementById("snackbar").MaterialSnackbar.showSnackbar(data);
+                }
             }
         }
     });
