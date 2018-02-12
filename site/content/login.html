@@ -10,7 +10,13 @@ layout: login
     var uiConfig = {
         signInSuccessUrl: '/',
         signInOptions: [
-            firebase.auth.GoogleAuthProvider.PROVIDER_ID,
+            {
+                provider: firebase.auth.GoogleAuthProvider.PROVIDER_ID,
+                customParameters: {
+                    prompt: 'select_account',
+                    hd: "dtechhs.org"
+                }
+            }
         ],
         // Terms of service url.
         tosUrl: '<your-tos-url>'
