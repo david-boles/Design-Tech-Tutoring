@@ -12,6 +12,8 @@ auth: true
         <br>
         Status: <span id="info-status"></span>
     </h1>
+
+    <img id="info-tutee-image" style="width: 120px; height: 120px; border-radius: 60px; margin: 0 16px 16px 0; float: left; display:none;">
     <span id="info-status-description"></span>
 </div>
 
@@ -29,22 +31,28 @@ auth: true
                 document.getElementById("info-location").innerText = reqVals.locationName;
                 document.getElementById("info-date").innerText = createdOn.toLocaleString();
                 if(reqVals.status == "unconfirmed") {
+                    document.getElementById("info-tutee-image").style.display = "none";
                     document.getElementById("info-status").innerHTML = "<i>Unconfirmed</i>";
                     document.getElementById("info-status-description").innerText = "Your request was made successfully but the assigned tutor has not yet confirmed that they recieved it. Please hold tight!";
                 }else if(reqVals.status == "failed") {
+                    document.getElementById("info-tutee-image").style.display = "none";
                     document.getElementById("info-status").innerHTML = "<b><i>FAILED</i></b>";
                     document.getElementById("info-status-description").innerText = "Your request failed in some way. This is likely due to tutors becoming unavailable as you were submitting it. Feel free to try again!";
                 }else if(reqVals.status == "timeout") {
+                    document.getElementById("info-tutee-image").style.display = "none";
                     document.getElementById("info-status").innerHTML = "<b><i>TIMEOUT</i></b>";
                     document.getElementById("info-status-description").innerText = "Your assigned tutor failed to confirm that they recieved your request in a timely manner. Please try again! Don't worry, you won't be assigned the same one.";
                 }else if(reqVals.status == "confirmed") {
+                    document.getElementById("info-tutee-image").style.display = "initial";
+                    document.getElementById("info-tutee-image").src = reqVals.tutorPhoto;
                     document.getElementById("info-status").innerHTML = "<b>Confirmed</b>";
-                    document.getElementById("info-status-description").innerText = "Your assigned tutor confirmed that they recieved your request. They should be at the requested location shortly!";
+                    document.getElementById("info-status-description").innerText = reqVals.tutorName + " (" + reqVals.tutorEmail + ") has confirmed that they recieved your request. They should be at the requested location shortly!";
                 }else if(reqVals.status == "completed") {
+                    document.getElementById("info-tutee-image").style.display = "initial";
+                    document.getElementById("info-tutee-image").src = reqVals.tutorPhoto;
                     document.getElementById("info-status").innerHTML = "<b>Completed</b>";
-                    document.getElementById("info-status-description").innerText = "Your assigned tutor has marked this request as completed. Hopefully they were helpful! If this is in error, please request a tutor again.";
+                    document.getElementById("info-status-description").innerText = reqVals.tutorName + " (" + reqVals.tutorEmail + ") has marked this request as completed. Hopefully they were helpful! If this is in error, please request a tutor again.";
                 }
-                //TODO add tutor info after confirmation
             });
         }
     });
