@@ -20,10 +20,10 @@ You should get automatically redirected from this page, it could take a minute i
                     firebase.database().ref('/tutors/' + userId).once('value').then(function(tutorProps) {
                         if(tutorProps.val() == null) {
                             firebase.database().ref('tutors/' + userId).set({available: false}).then(function(){
-                                window.location.href = "/settings/";
+                                window.location.href = "/tutor_console/";
                             });
                         }else {
-                            window.location.href = "/settings/";
+                            window.location.href = "/tutor_console/";
                         }
                     });
                 }else {

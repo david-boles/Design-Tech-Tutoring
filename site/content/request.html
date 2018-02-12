@@ -158,13 +158,13 @@ auth: true
                             request["assignee"] = assignedTutorID;
                             firebase.database().ref('/tutors/' + assignedTutorID + "/available").set(false).then(function() {
                                 firebase.database().ref('/requests/' + userId).set(request).then(function() {
-                                    window.location.href = "/last_request/";
+                                    window.location.href = "/current_request/";
                                 });
                             });
                         }else {
                             request["status"] = "failed";
                             firebase.database().ref('/requests/' + userId).set(request).then(function() {
-                                window.location.href = "/last_request/";
+                                window.location.href = "/current_request/";
                             });
                         }
                     });

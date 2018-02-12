@@ -1,5 +1,5 @@
 ---
-title: Last Submitted Request
+title: Current Request
 auth: true
 ---
 <div id="section-reqinfo" style="display: none;">
@@ -38,6 +38,7 @@ auth: true
                     document.getElementById("info-status").innerHTML = "<b><i>TIMEOUT</i></b>";
                     document.getElementById("info-status-description").innerText = "Your assigned tutor failed to confirm that they recieved your request in a timely manner. Please try again! Don't worry, you won't be assigned the same one.";
                 }
+                //TODO confirmed, rejected?, canceled, completed
             });
         }
     });
