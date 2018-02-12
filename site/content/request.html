@@ -2,7 +2,6 @@
 title: Request a Tutor
 auth: true
 ---
-
 <div  style="padding: 0 0 64px 0;">
     <div id="section-subjects">
         <h1>What subject?</h1>
@@ -112,20 +111,63 @@ auth: true
 
             //SUBMIT
             document.getElementById("submit_button").onclick = function() {
-                var radios = document.getElementsByName('location');
-
-                var selected;
-                for (var i = 0, length = radios.length; i < length; i++) {
-                    if (radios[i].checked) {
-                        selected = radios[i].value;
+                var subjectRadios = document.getElementsByName('subject');
+                var selectedSubject;
+                for (var i = 0, length = subjectRadios.length; i < length; i++) {
+                    if (subjectRadios[i].checked) {
+                        selectedSubject = subjectRadios[i].value;
                         break;
                     }
                 }
 
-                if(selected) {
-                    //TODO replace
+                var locationRadios = document.getElementsByName('location');
+                var selectedLocation;
+                for (var i = 0, length = locationRadios.length; i < length; i++) {
+                    if (locationRadios[i].checked) {
+                        selectedLocation = locationRadios[i].value;
+                        break;
+                    }
+                }
+
+                if(selectedSubject && selectedLocation) {//Things are selected correctly.
+
                     document.getElementById("section-locations").style.display = "none";
                     document.getElementById("section-submitting").style.display = "initial";
+
+                    firebase.database().ref('/tutors/').once('value').then(function(tutors) {//Get tutor info to assign
+                        
+                        var assignedTutorID;
+                        for(var tutorID in tutors.val()) {
+                            var tutor = tutors.val()[tutorID];
+                            if(tutor.available && tutor.subjects[selectedSubject]) {
+                                assignedTutorID = tutorID;
+                                break;
+                            }
+                        }
+
+                        var request = {};
+                        request["subject"] = selectedSubject;
+                        request["subjectName"] = document.getElementById(selectedSubject + "-name").innerText;
+                        request["location"] = selectedLocation;
+                        request["locationName"] = document.getElementById(selectedLocation + "-name").innerText;
+                        request["locationDescription"] = document.getElementById(selectedLocation + "-label").title;
+                        request["createdOn"] = new Date().toJSON();
+
+                        if(assignedTutorID) {
+                            request["status"] = "unconfirmed";
+                            request["assignee"] = assignedTutorID;
+                            firebase.database().ref('/tutors/' + assignedTutorID + "/available").set(false).then(function() {
+                                firebase.database().ref('/requests/' + userId).set(request).then(function() {
+                                    window.location.href = "/last_request/";
+                                });
+                            });
+                        }else {
+                            request["status"] = "failed";
+                            firebase.database().ref('/requests/' + userId).set(request).then(function() {
+                                window.location.href = "/last_request/";
+                            });
+                        }
+                    });
                 }else {
                     var data = {
                     message: "Please select a location before continuing.",
@@ -161,6 +203,7 @@ auth: true
             var subjectButton = document.createElement("input");
             subjectButton.type = "radio";
             subjectButton.id = subjectKey + "-button";
+            subjectButton.value = subjectKey;
             subjectButton.name = "subject";
             subjectButton.className = "mdl-radio__button";
             if(availabilities[subjectKey] == 0) {
@@ -171,7 +214,7 @@ auth: true
 
             var subjectText = document.createElement("span");
             subjectText.className = "mdl-radio__label";
-            subjectText.innerText = group.subjects[subjectKey].name + " (" + availabilities[subjectKey] + ")";
+            subjectText.innerHTML = "<span id='" + subjectKey + "-name" + "'>" + group.subjects[subjectKey].name + "</span>" + " (" + availabilities[subjectKey] + ")";
             componentHandler.upgradeElement(subjectText);
             subjectLabel.appendChild(subjectText);
 
@@ -210,12 +253,14 @@ auth: true
             var locationButton = document.createElement("input");
             locationButton.type = "radio";
             locationButton.id = locationKey + "-button";
+            locationButton.value = locationKey;
             locationButton.name = "location";
             locationButton.className = "mdl-radio__button";
             componentHandler.upgradeElement(locationButton);
             locationLabel.appendChild(locationButton);
 
             var locationText = document.createElement("span");
+            locationText.id = locationKey + "-name";
             locationText.className = "mdl-radio__label";
             locationText.innerText = group.locations[locationKey].name;
             componentHandler.upgradeElement(locationText);

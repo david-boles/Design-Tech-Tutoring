@@ -1,0 +1,18 @@
+---
+title: Last Submitted Request
+auth: true
+---
+<script>
+    firebase.auth().onAuthStateChanged(function(user) {
+        if (user) {
+            var userId = user.uid;
+
+            //Reload the page if a new request is made.
+            var firstCreatedOnValue = true;
+            firebase.database().ref('/requests/' + userId).on('value', function(request) {
+                var reqCon = request.val();
+                alert(JSON.stringify(reqCon));
+            });
+        }
+    });
+</script>
