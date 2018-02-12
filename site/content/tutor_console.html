@@ -120,6 +120,10 @@ auth: tutor
                 var availIcon = document.getElementById("availability_checkbox-icon");
 
                 if(assignedRequest) {
+                    setInterval(function(){
+                        markRequestTimedoutIfUnconfirmedTooLong(assignedRequestKey);
+                    }, 10000);//TODO verify that this works
+
                     availCheck.disabled = true;
                     availIcon.style.color = "rgba(0,0,0,.26)";
 
