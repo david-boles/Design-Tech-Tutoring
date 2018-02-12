@@ -2,16 +2,42 @@
 title: Last Submitted Request
 auth: true
 ---
+<div id="section-reqinfo" style="display: none;">
+    <h1>
+        <span id="info-subject"></span>
+        <br>
+        <span id="info-location"></span>
+        <br>
+        <span id="info-date"></span>
+        <br>
+        Status: <span id="info-status"></span>
+    </h1>
+    <span id="info-status-description"></span>
+</div>
+
 <script>
     firebase.auth().onAuthStateChanged(function(user) {
         if (user) {
             var userId = user.uid;
 
-            //Reload the page if a new request is made.
-            var firstCreatedOnValue = true;
             firebase.database().ref('/requests/' + userId).on('value', function(request) {
-                var reqCon = request.val();
-                alert(JSON.stringify(reqCon));
+                var reqVals = request.val();
+                var createdOn = new Date(reqVals.createdOn);
+
+                document.getElementById("section-reqinfo").style.display = "initial";
+                document.getElementById("info-subject").innerText = reqVals.subjectName;
+                document.getElementById("info-location").innerText = reqVals.locationName;
+                document.getElementById("info-date").innerText = createdOn.toLocaleString();
+                if(reqVals.status == "unconfirmed") {
+                    document.getElementById("info-status").innerHTML = "<i>Unconfirmed</i>";
+                    document.getElementById("info-status-description").innerText = "Your request was made successfully but the assigned tutor has not yet confirmed that they recieved it. Please hold tight!";
+                }else if(reqVals.status == "failed") {
+                    document.getElementById("info-status").innerHTML = "<b><i>FAILED</i></b>";
+                    document.getElementById("info-status-description").innerText = "Your request failed in some way. This is likely due to tutors becoming unavailable as you were submitting it. Feel free to try again!";
+                }else if(reqVals.status == "timeout") {
+                    document.getElementById("info-status").innerHTML = "<b><i>TIMEOUT</i></b>";
+                    document.getElementById("info-status-description").innerText = "Your assigned tutor failed to confirm that they recieved your request in a timely manner. Please try again! Don't worry, you won't be assigned the same one.";
+                }
             });
         }
     });
