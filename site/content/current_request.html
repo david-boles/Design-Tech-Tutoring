@@ -37,8 +37,14 @@ auth: true
                 }else if(reqVals.status == "timeout") {
                     document.getElementById("info-status").innerHTML = "<b><i>TIMEOUT</i></b>";
                     document.getElementById("info-status-description").innerText = "Your assigned tutor failed to confirm that they recieved your request in a timely manner. Please try again! Don't worry, you won't be assigned the same one.";
+                }else if(reqVals.status == "confirmed") {
+                    document.getElementById("info-status").innerHTML = "<b>Confirmed</b>";
+                    document.getElementById("info-status-description").innerText = "Your assigned tutor confirmed that they recieved your request. They should be at the requested location shortly!";
+                }else if(reqVals.status == "completed") {
+                    document.getElementById("info-status").innerHTML = "<b>Completed</b>";
+                    document.getElementById("info-status-description").innerText = "Your assigned tutor has marked this request as completed. Hopefully they were helpful! If this is in error, please request a tutor again.";
                 }
-                //TODO confirmed, rejected?, canceled, completed
+                //TODO add tutor info after confirmation
             });
         }
     });

@@ -26,7 +26,7 @@ auth: true
 
     <div id="section-submitting" style="display: none;">
         <h1>Submitting...</h1>
-        You should be redirected from this page soon&mdash;don't leave yet!
+        You should be redirected from this page fairly soon&mdash;don't leave yet!
     </div>
 
     <div id="snackbar" class="mdl-js-snackbar mdl-snackbar">
@@ -57,7 +57,7 @@ auth: true
                     for(var tutorID in tutors.val()) {
                         if(tutors.val()[tutorID].available) {
                             for(subjectKey in availabilities) {
-                                if(tutors.val()[tutorID].subjects[subjectKey]) {
+                                if(tutors.val()[tutorID].subjects && tutors.val()[tutorID].subjects[subjectKey]) {
                                     availabilities[subjectKey]++;
                                 }
                             }
@@ -139,7 +139,7 @@ auth: true
                         var assignedTutorID;
                         for(var tutorID in tutors.val()) {
                             var tutor = tutors.val()[tutorID];
-                            if(tutor.available && tutor.subjects[selectedSubject]) {
+                            if(tutor.available && tutor.subjects && tutor.subjects[selectedSubject]) {
                                 assignedTutorID = tutorID;
                                 break;
                             }
@@ -156,9 +156,15 @@ auth: true
                         if(assignedTutorID) {
                             request["status"] = "unconfirmed";
                             request["assignee"] = assignedTutorID;
-                            firebase.database().ref('/tutors/' + assignedTutorID + "/available").set(false).then(function() {
-                                firebase.database().ref('/requests/' + userId).set(request).then(function() {
-                                    window.location.href = "/current_request/";
+
+                            firebase.database().ref('/users/' + userId).once('value').then(function(user) {
+                                request["tuteeName"] = user.val().name;
+                                request["tuteePhoto"] = user.val().photo;
+                                request["tuteeEmail"] = user.val().email;
+                                firebase.database().ref('/tutors/' + assignedTutorID + "/available").set(false).then(function() {
+                                    firebase.database().ref('/requests/' + userId).set(request).then(function() {
+                                        window.location.href = "/current_request/";
+                                    });
                                 });
                             });
                         }else {

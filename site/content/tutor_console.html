@@ -2,6 +2,36 @@
 title: Tutor Console
 auth: tutor
 ---
+<div id="current_request" style="display: none;">
+    <div class="demo-card-square mdl-card mdl-shadow--4dp" style="background-color: #444; width: 100%; min-height: 0;">
+        <div class="mdl-card__title" style="color:white;">
+            <h2 id="request-status" class="mdl-card__title-text"></h2>
+        </div>
+        <div class="mdl-card__supporting-text" style="color: white; padding-top: 0; padding-bottom: 0;">
+            <img id="request-tutee-image" style="width: 120px; height: 120px; border-radius: 60px; float: left; margin: 0 16px 16px 0;">
+
+            <div style="float: right; margin-bottom: 16px;">
+                <span id="request-created_on"></span>
+
+                <br><br>
+
+                <span id="request-tutee-name"></span>
+                <br>
+                <span id="request-tutee-email"></span>
+    
+                <br><br>
+    
+                <span id="request-subject"></span>
+                <br>
+                <span id="request-location"></span> (<span id="request-location-description"></span>)
+            </div>
+        </div>
+        <div class="mdl-card__actions mdl-card--border">
+            <button id="request-button" class="mdl-button mdl-button--colored mdl-js-button mdl-js-ripple-effect"></button>
+        </div>
+    </div>
+    <hr>
+</div>
 <div id="settings-availability">
     <h1>
         Available
@@ -30,7 +60,7 @@ auth: tutor
             //AVAILABILITY
             //Variables for the availability checkbox and icon.
             var availCheck = document.getElementById("availability_checkbox");
-            var availIcon = document.getElementById("availability_checkbox-icon")
+            var availIcon = document.getElementById("availability_checkbox-icon");
 
             //Function to update the availability icon based on the checkbox.
             function updateAvailIcon(){
@@ -66,6 +96,75 @@ auth: tutor
             firebase.database().ref('/tutors/' + userId + '/available').on('value', function(available) {
                 availCheck.checked = available.val();
                 updateAvailIcon();
+            });
+
+
+
+            //REQUESTS
+            firebase.database().ref('/requests/').on('value', function(requests) {
+                var reqsVal = requests.val();
+
+                var assignedRequest;
+                var assignedRequestKey;
+                for(var requestKey in reqsVal) {
+                    var request = reqsVal[requestKey];
+                    if(request.assignee == userId && (request.status == "unconfirmed" || request.status == "confirmed")) {
+                        assignedRequest = request;
+                        assignedRequestKey = requestKey;
+                        break;
+                    }
+                }
+
+
+                var availCheck = document.getElementById("availability_checkbox");
+                var availIcon = document.getElementById("availability_checkbox-icon");
+
+                if(assignedRequest) {
+                    availCheck.disabled = true;
+                    availIcon.style.color = "rgba(0,0,0,.26)";
+
+                    var button = document.getElementById("request-button");
+                    if(assignedRequest.status == "unconfirmed") {
+                        document.getElementById("request-status").innerHTML = "<i>Unconfirmed</i>";
+                        button.innerText = "CONFIRM";
+                        button.onclick = function() {
+                            firebase.database().ref('/users/' + userId).once('value').then(function(tutorProps) {
+                                update = {
+                                    status: "confirmed"
+                                };
+                                update["tutorName"] = tutorProps.val().name;
+                                update["tutorEmail"] = tutorProps.val().email;
+                                update["tutorPhoto"] = tutorProps.val().photo;
+
+                                firebase.database().ref('/requests/' + assignedRequestKey).update(update);
+                            });
+                        };
+                    }else if(assignedRequest.status == "confirmed") {
+                        document.getElementById("request-status").innerHTML = "<b>Confirmed</b>";
+                        button.innerText = "MARK COMPLETE";
+                        button.onclick = function() {
+                            firebase.database().ref('/requests/' + assignedRequestKey).update({status: "completed"});
+                        }
+                    }
+
+                    document.getElementById("request-created_on").innerText = new Date(assignedRequest.createdOn).toLocaleString();
+
+                    document.getElementById("request-tutee-image").src = assignedRequest.tuteePhoto;
+                    document.getElementById("request-tutee-name").innerText = assignedRequest.tuteeName;
+                    document.getElementById("request-tutee-email").innerText = assignedRequest.tuteeEmail;
+
+                    document.getElementById("request-subject").innerText = assignedRequest.subjectName;
+                    document.getElementById("request-location").innerText = assignedRequest.locationName;
+                    document.getElementById("request-location-description").innerText = assignedRequest.locationDescription;
+
+                    
+
+                    document.getElementById("current_request").style.display = "initial";
+                }else {
+                    document.getElementById("current_request").style.display = "none";
+                    availCheck.disabled = false;
+                    updateAvailIcon();
+                }
             });
 
 
