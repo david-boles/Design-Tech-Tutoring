@@ -127,6 +127,7 @@ auth: tutor
                     if(assignedRequest.status == "unconfirmed") {
                         document.getElementById("request-status").innerHTML = "<i>Unconfirmed</i>";
                         button.innerText = "CONFIRM";
+                        button.style.cssFloat = "left";
                         button.onclick = function() {
                             firebase.database().ref('/users/' + userId).once('value').then(function(tutorProps) {
                                 update = {
@@ -142,6 +143,7 @@ auth: tutor
                     }else if(assignedRequest.status == "confirmed") {
                         document.getElementById("request-status").innerHTML = "<b>Confirmed</b>";
                         button.innerText = "MARK COMPLETE";
+                        button.style.cssFloat = "right";
                         button.onclick = function() {
                             firebase.database().ref('/requests/' + assignedRequestKey).update({status: "completed"});
                         }
