@@ -25,6 +25,11 @@ auth: true
         </button>
     </div>
 
+    <div id="section-submitting" style="display: none;">
+        <h1>Submitting...</h1>
+        You should be redirected from this page soon&mdash;don't leave yet!
+    </div>
+
     <div id="snackbar" class="mdl-js-snackbar mdl-snackbar">
         <div class="mdl-snackbar__text"></div>
         <button class="mdl-snackbar__action" type="button"></button>
@@ -119,12 +124,8 @@ auth: true
 
                 if(selected) {
                     //TODO replace
-                    var data = {
-                    message: "Your request would now be submitted!",
-                    timeout: 2500
-                    };
-
-                    document.getElementById("snackbar").MaterialSnackbar.showSnackbar(data);
+                    document.getElementById("section-locations").style.display = "none";
+                    document.getElementById("section-submitting").style.display = "initial";
                 }else {
                     var data = {
                     message: "Please select a location before continuing.",
