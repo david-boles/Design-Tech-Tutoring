@@ -69,7 +69,7 @@
                             var userId = user.uid;
 
                             //Validate tutor status, redirect if not allowed and show things.
-                            return firebase.database().ref('/users/' + userId).once('value').then(function(userProps) {
+                            firebase.database().ref('/users/' + userId).once('value').then(function(userProps) {
                                 if(userProps.val().isTutor) {
                                     var reqd = document.getElementsByClassName("show-auth");
                                     for (var i = 0; i < reqd.length; i++) {
@@ -91,10 +91,30 @@
                                 document.getElementById("user_icon_tooltip").innerHTML = userProps.val().name + "<br>" + userProps.val().email;
                                 document.getElementById("user_icon_image").src = userProps.val().photo;
                             });
+
+                            
+                            setInterval(function(){
+                                markRequestTimedoutIfUnconfirmedTooLong(userId);
+                            }, 10000);
+
                         } else {
                             {{ if .Params.auth }}window.location.href = "/login/"{{ end }};
                         }
+
+                        
                     });
+
+                    function markRequestTimedoutIfUnconfirmedTooLong(tuteeId) {
+                        firebase.database().ref('/requests/' + tuteeId).on('value', function(request) {
+                            if(request.val().status == "unconfirmed") {
+                                var timeoutMillisFromNow = new Date(request.val().createdOn) - new Date();
+                                timeoutMillisFromNow += 120000;
+                                if(timeoutMillisFromNow <= 0) {
+                                    firebase.database().ref('/requests/' + tuteeId + "/status").set("timedout");
+                                }
+                            }
+                        });
+                    }
                 </script>
             {{ end }}
         {{ end }}

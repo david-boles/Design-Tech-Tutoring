@@ -38,10 +38,10 @@ auth: true
                     document.getElementById("info-tutee-image").style.display = "none";
                     document.getElementById("info-status").innerHTML = "<b><i>FAILED</i></b>";
                     document.getElementById("info-status-description").innerText = "Your request failed in some way. This is likely due to tutors becoming unavailable as you were submitting it. Feel free to try again!";
-                }else if(reqVals.status == "timeout") {
+                }else if(reqVals.status == "timedout") {
                     document.getElementById("info-tutee-image").style.display = "none";
-                    document.getElementById("info-status").innerHTML = "<b><i>TIMEOUT</i></b>";
-                    document.getElementById("info-status-description").innerText = "Your assigned tutor failed to confirm that they recieved your request in a timely manner. Please try again! Don't worry, you won't be assigned the same one.";
+                    document.getElementById("info-status").innerHTML = "<b><i>TIMED OUT</i></b>";
+                    document.getElementById("info-status-description").innerText = "Your assigned tutor failed to confirm that they recieved your request in a timely manner. Please try again! Don't worry, you won't be assigned the same tutor.";
                 }else if(reqVals.status == "confirmed") {
                     document.getElementById("info-tutee-image").style.display = "initial";
                     document.getElementById("info-tutee-image").src = reqVals.tutorPhoto;
