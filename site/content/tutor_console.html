@@ -211,7 +211,9 @@ auth: tutor
             subjectCheckbox.type = "checkbox";
             subjectCheckbox.id = subjectKey + "-checkbox";
             subjectCheckbox.className = "mdl-checkbox__input";
-            subjectCheckbox.checked = tutor.subjects[subjectKey];
+            if(tutor.subjects) {
+                subjectCheckbox.checked = tutor.subjects[subjectKey];
+            }
             componentHandler.upgradeElement(subjectCheckbox);
             subjectLabel.appendChild(subjectCheckbox);
 
