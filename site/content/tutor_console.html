@@ -108,7 +108,7 @@ auth: tutor
                 var assignedRequestKey;
                 for(var requestKey in reqsVal) {
                     var request = reqsVal[requestKey];
-                    if(request.assignee == userId && (request.status == "unconfirmed" || request.status == "confirmed")) {
+                    if(request.tutorID == userId && (request.status == "unconfirmed" || request.status == "confirmed")) {
                         assignedRequest = request;
                         assignedRequestKey = requestKey;
                         break;

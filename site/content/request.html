@@ -155,7 +155,7 @@ auth: true
 
                         if(assignedTutorID) {
                             request["status"] = "unconfirmed";
-                            request["assignee"] = assignedTutorID;
+                            request["tutorID"] = assignedTutorID;
 
                             firebase.database().ref('/users/' + userId).once('value').then(function(user) {
                                 request["tuteeName"] = user.val().name;
