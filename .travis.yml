@@ -6,11 +6,10 @@ script:
   - cd site
   - rm -rf public/*
   - ../binaries/hugo
+  - cd ../
 
 deploy:
   provider: script
-  script: 
-    - cd ../
-    - bash deploy.sh
+  script: bash deploy.sh
   on:
     branch: master
