@@ -1,6 +1,48 @@
 {
   "rules": {
-    ".read": "auth != null",
-    ".write": "auth != null"
+    "locations": {
+      ".read": "auth != null"
+    },
+    "requests": {
+      ".read": "root.child('users').child(auth.uid).child('isTutor').val() == true",
+      "$tuteeID": {
+        ".write": "auth.uid == $tuteeID",
+        "tutorEmail": {
+          ".write": "auth.uid == data.child('tutorID').val()"
+        },
+        "tutorName": {
+          ".write": "auth.uid == data.child('tutorID').val()"
+        },
+        "tutorPhoto": {
+          ".write": "auth.uid == data.child('tutorID').val()"
+        }
+      }
+    },
+    "tutors": {
+      ".read": "auth != null",
+      "$tutorID": {
+        ".write": "auth.uid == $tutorID && root.child('users').child(auth.uid).child('isTutor').val() == true"
+      }
+    },
+    "subjects": {
+      ".read": "auth != null"
+    },
+  	"users": {
+      "$userID": {
+        ".read": "auth.uid == $userID",
+        "email": {
+          ".write": "auth.uid == $userID"
+        },
+        "messagingToken": {
+          ".write": "auth.uid == $userID"
+        },
+        "name": {
+          ".write": "auth.uid == $userID"
+        },
+        "photo": {
+          ".write": "auth.uid == $userID"
+        }
+      }
+    }
   }
 }
