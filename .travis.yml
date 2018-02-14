@@ -8,10 +8,10 @@ script:
   - ../binaries/hugo
 
 deploy:
-provider: script
-script: 
-  - cd ../
-  - npm install -g firebase-tools
-  - firebase deploy --token=${FIREBASE_API_TOKEN}
-on:
-  branch: master
+  provider: script
+  script: 
+    - cd ../
+    - npm install -g firebase-tools
+    - firebase deploy --token=${FIREBASE_API_TOKEN}
+  on:
+    branch: master
