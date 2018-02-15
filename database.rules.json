@@ -6,16 +6,8 @@
     "requests": {
       ".read": "root.child('users').child(auth.uid).child('isTutor').val() == true",
       "$tuteeID": {
-        ".write": "auth.uid == $tuteeID",
-        "tutorEmail": {
-          ".write": "auth.uid == data.child('tutorID').val()"
-        },
-        "tutorName": {
-          ".write": "auth.uid == data.child('tutorID').val()"
-        },
-        "tutorPhoto": {
-          ".write": "auth.uid == data.child('tutorID').val()"
-        }
+        ".write": "auth.uid == $tuteeID || auth.uid == data.child('tutorID').val()",
+        ".read": "auth.uid == $tuteeID || auth.uid == data.child('tutorID').val()"
       }
     },
     "tutors": {
