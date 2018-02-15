@@ -115,6 +115,10 @@
                                         firebase.database().ref("users/" + userId + "/messagingToken").set(refreshedToken);
                                     })
                                 });
+
+                                messaging.onMessage(function(payload) {
+                                    window.location.href = payload.notification.click_action;
+                                });
                             });
 
 
@@ -126,8 +130,6 @@
                         } else {
                             {{ if .Params.auth }}window.location.href = "/login/"{{ end }};
                         }
-
-                        
                     });
 
                     function markRequestTimedoutIfUnconfirmedTooLong(tuteeId) {
