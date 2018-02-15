@@ -65,7 +65,7 @@ exports.requestChanged = functions.database.ref('/requests/{tuteeID}').onWrite(e
 });
 
 function sendUpdate(token, title, body, page) {
-    var payload = {notification: {}};
+    var payload = {notification: {icon: 'https://tutoring.dtechhs.org/favicon.png'}};
     payload.notification.title = title;
     payload.notification.body = body;
     if(page) {
