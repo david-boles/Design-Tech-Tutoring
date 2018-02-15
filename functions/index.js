@@ -17,7 +17,7 @@ exports.requestChanged = functions.database.ref('/requests/{tuteeID}').onWrite(e
                     return sendUpdate(tutor.val().messagingToken, "New Request!", "You have been requested by " + reqVals.tuteeName + ".", "tutor_console");
                 }
             });
-        }
+        });
         
     }
 
