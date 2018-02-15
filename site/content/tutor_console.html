@@ -134,14 +134,10 @@ auth: tutor
                         button.style.cssFloat = "left";
                         button.onclick = function() {
                             firebase.database().ref('/users/' + userId).once('value').then(function(tutorProps) {
-                                update = {
-                                    status: "confirmed"
-                                };
-                                update["tutorName"] = tutorProps.val().name;
-                                update["tutorEmail"] = tutorProps.val().email;
-                                update["tutorPhoto"] = tutorProps.val().photo;
-
-                                firebase.database().ref('/requests/' + assignedRequestKey).update(update);
+                                firebase.database().ref('/requests/' + assignedRequestKey + "/status").update("confirmed");
+                                firebase.database().ref('/requests/' + assignedRequestKey + "/tutorName").update(tutorProps.val().name);
+                                firebase.database().ref('/requests/' + assignedRequestKey + "/tutorEmail").update(tutorProps.val().email);
+                                firebase.database().ref('/requests/' + assignedRequestKey + "/tutorPhoto").update(tutorProps.val().photo);
                             });
                         };
                     }else if(assignedRequest.status == "confirmed") {
@@ -149,7 +145,7 @@ auth: tutor
                         button.innerText = "MARK COMPLETE";
                         button.style.cssFloat = "right";
                         button.onclick = function() {
-                            firebase.database().ref('/requests/' + assignedRequestKey).update({status: "completed"});
+                            firebase.database().ref('/requests/' + assignedRequestKey + "/status").update("completed");
                         }
                     }
 
