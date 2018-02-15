@@ -50,7 +50,7 @@ exports.requestChanged = functions.database.ref('/requests/{tuteeID}').onWrite(e
         return admin.database().ref('/users/' + event.params.tuteeID).once('value')
         .then(function(tutee) {
             if(tutee.val().messagingToken) {
-                return sendUpdate(tutee.val().messagingToken, "Request Timed Out :(", "Your assigned tutor did not confirm your request.", "current_request")
+                return sendUpdate(tutee.val().messagingToken, "Request Timed Out :(", "Your assigned tutor did not confirm your request.", "request")
                 .then(function() {
                     return admin.database().ref('/users/' + reqVals.tutorID).once('value')
                     .then(function(tutor) {
@@ -68,7 +68,9 @@ function sendUpdate(token, title, body, page) {
     var payload = {notification: {}};
     payload.notification.title = title;
     payload.notification.body = body;
-    payload.notification.clickAction = "https://tutoring.dtechhs.org/" + page + "/";
+    if(page) {
+        payload.notification.clickAction = "https://tutoring.dtechhs.org/" + page + "/";
+    }
 
     var options = {
         timeToLive: 60
