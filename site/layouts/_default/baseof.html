@@ -117,7 +117,9 @@
                                 });
 
                                 messaging.onMessage(function(payload) {
-                                    window.location.href = payload.notification.click_action;
+                                    if(window.location.href != payload.notification.click_action) {
+                                        window.location.href = payload.notification.click_action;
+                                    }
                                 });
                             });
 
