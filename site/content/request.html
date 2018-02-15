@@ -155,16 +155,14 @@ auth: true
 
                         if(assignedTutorID) {
                             request["status"] = "unconfirmed";
-                            request["assignee"] = assignedTutorID;
+                            request["tutorID"] = assignedTutorID;
 
                             firebase.database().ref('/users/' + userId).once('value').then(function(user) {
                                 request["tuteeName"] = user.val().name;
                                 request["tuteePhoto"] = user.val().photo;
                                 request["tuteeEmail"] = user.val().email;
-                                firebase.database().ref('/tutors/' + assignedTutorID + "/available").set(false).then(function() {
-                                    firebase.database().ref('/requests/' + userId).set(request).then(function() {
-                                        window.location.href = "/current_request/";
-                                    });
+                                firebase.database().ref('/requests/' + userId).set(request).then(function() {
+                                    window.location.href = "/current_request/";
                                 });
                             });
                         }else {
