@@ -10,18 +10,23 @@ exports.requestChanged = functions.database.ref('/requests/{tuteeID}').onWrite(e
     //firebase.database().ref('/tutors/' + assignedTutorID + "/available").set(false).then(function() {
     var reqVals = event.data.val();
     if(reqVals.status == "unconfirmed") {
-        return firebase.database().ref('/tutors/' + reqVals.tutorID + "/available").set(false).then(function() {
+        console.log("NEW REQUEST");
+        return admin.database().ref('/tutors/' + reqVals.tutorID + "/available").set(false).then(function() {
+            console.log("Set unavailable.");
             return admin.database().ref('/users/' + reqVals.tutorID).once('value')
             .then(function(tutor) {
+                console.log("Got tutor info.");
                 if(tutor.val().messagingToken) {
+                    console.log("Sending message...");
                     return sendUpdate(tutor.val().messagingToken, "New Request!", "You have been requested by " + reqVals.tuteeName + ".", "tutor_console");
                 }
             });
-        }
+        });
         
     }
 
     else if(reqVals.status == "confirmed") {
+        console.log("CONFIRMED");
         return admin.database().ref('/users/' + event.params.tuteeID).once('value')
         .then(function(tutee) {
             if(tutee.val().messagingToken) {
@@ -31,6 +36,7 @@ exports.requestChanged = functions.database.ref('/requests/{tuteeID}').onWrite(e
     }
 
     else if(reqVals.status == "completed") {
+        console.log("COMPLETED");
         return admin.database().ref('/users/' + event.params.tuteeID).once('value')
         .then(function(tutee) {
             if(tutee.val().messagingToken) {
@@ -40,9 +46,10 @@ exports.requestChanged = functions.database.ref('/requests/{tuteeID}').onWrite(e
     }
 
     else if(reqVals.status == "timedout") {
+        console.log("TIMED OUT");
         return admin.database().ref('/users/' + event.params.tuteeID).once('value')
         .then(function(tutee) {
-            if(tutee.val().messagingToken) {//TODO send message to tutor
+            if(tutee.val().messagingToken) {
                 return sendUpdate(tutee.val().messagingToken, "Request Timed Out :(", "Your assigned tutor did not confirm your request.", "current_request")
                 .then(function() {
                     return admin.database().ref('/users/' + reqVals.tutorID).once('value')
