@@ -7,14 +7,18 @@ admin.initializeApp(functions.config().firebase);
 
 exports.requestChanged = functions.database.ref('/requests/{tuteeID}').onWrite(event => 
 {
+    //firebase.database().ref('/tutors/' + assignedTutorID + "/available").set(false).then(function() {
     var reqVals = event.data.val();
     if(reqVals.status == "unconfirmed") {
-        return admin.database().ref('/users/' + reqVals.tutorID).once('value')
-        .then(function(tutor) {
-            if(tutor.val().messagingToken) {
-                return sendUpdate(tutor.val().messagingToken, "New Request!", "You have been requested by " + reqVals.tuteeName + ".", "tutor_console");
-            }
-        });
+        return firebase.database().ref('/tutors/' + reqVals.tutorID + "/available").set(false).then(function() {
+            return admin.database().ref('/users/' + reqVals.tutorID).once('value')
+            .then(function(tutor) {
+                if(tutor.val().messagingToken) {
+                    return sendUpdate(tutor.val().messagingToken, "New Request!", "You have been requested by " + reqVals.tuteeName + ".", "tutor_console");
+                }
+            });
+        }
+        
     }
 
     else if(reqVals.status == "confirmed") {
