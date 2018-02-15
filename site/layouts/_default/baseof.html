@@ -29,6 +29,16 @@
                 firebase.initializeApp(config);
             </script>
         {{ end }}
+
+        <style>
+            .mdl-icon-toggle {
+                -webkit-user-select: none;
+                -moz-user-select: none;
+                -ms-user-select: none;
+                -o-user-select: none; 
+                user-select: none; 
+            }
+        </style>
     </head>
 
     <body {{block "body-element" . }}{{end}}>
