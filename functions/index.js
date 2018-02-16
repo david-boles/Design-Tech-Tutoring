@@ -78,3 +78,9 @@ function sendUpdate(token, title, body, page) {
 
     return admin.messaging().sendToDevice(token, payload, options);
 }
+
+exports.restrictToDTechHS = functions.auth.user().onCreate((event) => {
+    if(!event.data.email.toLowerCase().endsWith("@dtechhs.org")) {
+        return admin.auth().deleteUser(event.data.uid);
+    }
+});
