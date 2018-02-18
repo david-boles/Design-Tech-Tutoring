@@ -1,3 +1,14 @@
+{{ define "pre-imports" }}
+    <script src="https://cdn.firebase.com/libs/firebaseui/2.6.1/firebaseui.js"></script>
+    <link type="text/css" rel="stylesheet" href="https://cdn.firebase.com/libs/firebaseui/2.6.1/firebaseui.css" />
+{{ end }}
+{{ define "post-imports" }}
+<style>
+    .firebaseui-idp-google, .firebaseui-idp-google:hover, .mdl-button.firebaseui-idp-google:active, .mdl-button.firebaseui-idp-google:focus {
+        background-color: #fff;
+    }
+</style>
+{{ end }}
 {{ define "body-element" }}style="background-color: #444;"{{ end }}
 {{ define "main" }}
     {{ .Content }}
