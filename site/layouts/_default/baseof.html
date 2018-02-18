@@ -40,6 +40,16 @@
                 -o-user-select: none; 
                 user-select: none; 
             }
+
+            #see-problem-button {
+                margin: 16px; position: absolute; bottom: 0; left: 0; right: 0;
+            }
+
+            @media screen and (max-height: 375px) {
+                #see-problem-button {
+                    position: relative;
+                }
+            }
         </style>
 
         {{ block "post-imports" . }}{{ end }}
@@ -70,7 +80,7 @@
                         <a class="mdl-navigation__link show-auth" style="display: none" href="/request/">New Request</a>
                         <a class="mdl-navigation__link show-auth" style="display: none" href="/current_request/">Current Request</a>
                         <a class="mdl-navigation__link" href="https://github.com/david476/Design-Tech-Tutoring/blob/master/README.md">About</a>
-                        <a class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--colored" style="position: absolute; bottom: 0; left: 0; right: 0; margin: 16px;" target="_blank" href="https://github.com/david476/Design-Tech-Tutoring/blob/master/README.md#errors-bugs-or-improvements">
+                        <a id="see-problem-button" class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--colored" target="_blank" href="https://github.com/david476/Design-Tech-Tutoring/blob/master/README.md#errors-bugs-or-improvements">
                             See a problem?
                         </a>
                     </nav>
