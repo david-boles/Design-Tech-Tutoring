@@ -59,6 +59,13 @@ exports.requestChanged = functions.database.ref('/requests/{tuteeID}').onWrite(e
                         }
                     });
                 });
+            }else {
+                return admin.database().ref('/users/' + reqVals.tutorID).once('value')
+                .then(function(tutor) {
+                    if(tutor.val().messagingToken) {
+                        return sendUpdate(tutor.val().messagingToken, "Request Timed Out :(", "You failed to confirm " + reqVals.tuteeName + "'s request.", "tutor_console");
+                    }
+                });
             }
         });
     }
