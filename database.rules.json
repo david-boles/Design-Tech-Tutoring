@@ -13,7 +13,10 @@
     "tutors": {
       ".read": "auth != null",
       "$tutorID": {
-        ".write": "auth.uid == $tutorID && root.child('users').child(auth.uid).child('isTutor').val() == true"
+        ".write": "auth.uid == $tutorID && root.child('users').child(auth.uid).child('isTutor').val() == true",
+        "available": {
+          ".write": "root.child('users').child(auth.uid).child('isAdmin').val() == true"
+        }
       }
     },
     "subjects": {

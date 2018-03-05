@@ -1,0 +1,17 @@
+---
+title: Admin Console
+auth: admin
+---
+<h1>Reset Availablility</h1>
+Set all tutors' status to unavailable.
+<br><br>
+<button id="availability_reset-button" class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--colored" onclick="availabilityResetButtonHandler();">RESET</button>
+<script>
+    function availabilityResetButtonHandler() {
+        firebase.database().ref('/tutors').once('value').then(function(tutors) {
+            for(tutorID in tutors.val()){
+                firebase.database().ref('/tutors/' + tutorID + "/available").set(false);
+            }
+        });
+    }
+</script>
